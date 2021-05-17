@@ -1,0 +1,35 @@
+@startuml
+
+actor "User" as U1
+participant "Application GUI" as P1
+participant "Backend code of application" as P2
+participant "Local Server" as P4
+participant "server backend code" as P5
+database "Database" as D1
+participant "Coop Door" as P3
+
+U1 -> P1 : User click on button to open coop doors with ID 1.
+P1 -> P2 : Button in GUI calls its adequate method for this button.
+P2 -> P4 : request to open coop doors with ID 1.
+P4 -> P5 : parse the request.
+P5 -> D1 : Search for IP address of coop door with ID 1.
+D1 --> P5 : return IP address of coop door with ID 1.
+P5 -> P4 : request IP of door ID 1 to open.
+P4 -> P3 : openDoor request.
+
+alt request successfull
+    P3 --> P4 : successfully opened doors.
+    P4 -> P5 : parse the request.
+    P5 --> P2 : sucessfully opened doors.
+    P2 --> P1 : Output to GUI that doors opened.
+    P1 -> U1 : Look at output
+else request unsuccessfull
+    group request unsuccessfull
+        P3 --> P4 : door opening unsuccessfull.
+        P4 -> P5 : parse the request.
+        P5 --> P2 : Error occured in opening of the door
+        P2 --> P1 : Output error to GUI.
+        P1 -> U1 : Look at output
+    end
+end
+@enduml
